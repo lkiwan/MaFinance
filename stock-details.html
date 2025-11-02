@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="pageTitle">Stock Details - MaFinance Pro</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Styles pour l'animation de chargement, etc. (inchangés) */
+      .fade-in {
+        animation: fadeIn 0.8s ease-in-out;
+      }
+      .slide-in {
+        animation: slideIn 0.8s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .price-up {
+        color: #10b981;
+      }
+      .price-down {
+        color: #ef4444;
+      }
+      .loading-spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border-left-color: #3b82f6;
+        animation: spin 1s linear infinite;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen flex flex-col">
+    <custom-navbar></custom-navbar>
+
+    <main class="flex-grow py-8">
+      <div class="container mx-auto px-6">
+        <!-- Back button -->
+        <div class="mb-6">
+          <a
+            href="stocks.html"
+            class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <i data-feather="arrow-left" class="h-5 w-5 mr-2"></i>
+            Back to Stocks
+          </a>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-20">
+          <div class="loading-spinner mb-4"></div>
+          <p class="text-gray-600">Chargement des détails de l'action...</p>
+        </div>
+
+        <!-- Stock Content (Hidden by default) -->
+        <div id="stockContent" class="hidden">
+          <!-- Stock Header -->
+          <div class="mb-8 fade-in" id="stockHeader">
+            <div
+              class="flex flex-col md:flex-row md:items-center md:justify-between"
+            >
+              <div>
+                <h1
+                  class="text-4xl font-bold text-gray-800 mb-2"
+                  id="stockName"
+                >
+                  --
+                </h1>
+                <div class="flex items-center">
+                  <span class="text-xl text-gray-600 mr-4" id="stockSymbol"
+                    >--</span
+                  >
+                  <span
+                    class="px-3 py-1 rounded-full text-sm font-semibold"
+                    id="stockChange"
+                    >0.00%</span
+                  >
+                </div>
+              </div>
+              <div class="mt-4 md:mt-0">
+                <div class="text-right">
+                  <p class="text-sm text-gray-500">Prix Actuel</p>
+                  <p class="text-3xl font-bold text-gray-800" id="stockPrice">
+                    -- MAD
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart Section removed per request -->
+
+          <!-- Main Content -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column - Key Metrics -->
+            <div class="lg:col-span-1">
+              <div
+                class="bg-white rounded-xl shadow-lg p-6 mb-6 slide-in card-hover"
+                data-aos="fade-right"
+                data-aos-delay="100"
+              >
+                <h2
+                  class="text-xl font-bold text-gray-800 mb-4 flex items-center"
+                >
+                  <i
+                    data-feather="bar-chart-2"
+                    class="h-5 w-5 mr-2 text-blue-600"
+                  ></i>
+                  Key Metrics
+                </h2>
+                <div class="space-y-4">
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Volume (Actions)</span>
+                    <span class="font-semibold text-gray-800" id="stockVolume"
+                      >--</span
+                    >
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Volume (MAD)</span>
+                    <span
+                      class="font-semibold text-gray-800"
+                      id="stockVolumeMad"
+                      >--</span
+                    >
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Market Cap</span>
+                    <span
+                      class="font-semibold text-gray-800"
+                      id="stockMarketCap"
+                      >--</span
+                    >
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Transactions</span>
+                    <span
+                      class="font-semibold text-gray-800"
+                      id="stockTransactions"
+                      >--</span
+                    >
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Status</span>
+                    <span class="font-semibold text-gray-800" id="stockStatus"
+                      >--</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="bg-white rounded-xl shadow-lg p-6 slide-in card-hover"
+                data-aos="fade-right"
+                data-aos-delay="200"
+              >
+                <h2
+                  class="text-xl font-bold text-gray-800 mb-4 flex items-center"
+                >
+                  <i
+                    data-feather="activity"
+                    class="h-5 w-5 mr-2 text-blue-600"
+                  ></i>
+                  Trading Range
+                </h2>
+                <div class="space-y-4">
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Reference Price</span>
+                    <span
+                      class="font-semibold text-gray-800"
+                      id="stockReference"
+                      >--</span
+                    >
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Opening Price</span>
+                    <span class="font-semibold text-gray-800" id="stockOpening"
+                      >--</span
+                    >
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Day High</span>
+                    <span class="font-semibold text-gray-800" id="stockHigh"
+                      >--</span
+                    >
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Day Low</span>
+                    <span class="font-semibold text-gray-800" id="stockLow"
+                      >--</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column - Detailed Information -->
+            <div class="lg:col-span-2">
+              <div
+                class="bg-white rounded-xl shadow-lg p-6 mb-6 slide-in card-hover"
+                data-aos="fade-left"
+                data-aos-delay="100"
+              >
+                <h2
+                  class="text-xl font-bold text-gray-800 mb-4 flex items-center"
+                >
+                  <i data-feather="info" class="h-5 w-5 mr-2 text-blue-600"></i>
+                  Description
+                </h2>
+                <p class="text-gray-600" id="stockDescription">--</p>
+              </div>
+
+              <div
+                class="bg-white rounded-xl shadow-lg p-6 mb-6 slide-in card-hover"
+                data-aos="fade-left"
+                data-aos-delay="100"
+              >
+                <h2
+                  class="text-xl font-bold text-gray-800 mb-4 flex items-center"
+                >
+                  <i
+                    data-feather="trending-up"
+                    class="h-5 w-5 mr-2 text-blue-600"
+                  ></i>
+                  Order Book Snapshot (Best Prices)
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="bg-gray-50 p-4 rounded-lg shadow-inner">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                      Buy Side (Demande)
+                    </h3>
+                    <div class="space-y-4">
+                      <div class="bg-white p-3 rounded-md shadow-sm">
+                        <p class="text-xs font-medium text-blue-600 mb-1">
+                          Best Buy Price
+                        </p>
+                        <p
+                          class="text-sm font-semibold text-gray-800"
+                          id="stockBestBuy"
+                        >
+                          --
+                        </p>
+                      </div>
+                      <div class="bg-white p-3 rounded-md shadow-sm">
+                        <p class="text-xs font-medium text-blue-600 mb-1">
+                          Best Buy Quantity
+                        </p>
+                        <p
+                          class="text-sm font-semibold text-gray-800"
+                          id="stockBestBuyQty"
+                        >
+                          --
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bg-gray-50 p-4 rounded-lg shadow-inner">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                      Sell Side (Offre)
+                    </h3>
+                    <div class="space-y-4">
+                      <div class="bg-white p-3 rounded-md shadow-sm">
+                        <p class="text-xs font-medium text-blue-600 mb-1">
+                          Best Sell Price
+                        </p>
+                        <p
+                          class="text-sm font-semibold text-gray-800"
+                          id="stockBestSell"
+                        >
+                          --
+                        </p>
+                      </div>
+                      <div class="bg-white p-3 rounded-md shadow-sm">
+                        <p class="text-xs font-medium text-blue-600 mb-1">
+                          Best Sell Quantity
+                        </p>
+                        <p
+                          class="text-sm font-semibold text-gray-800"
+                          id="stockBestSellQty"
+                        >
+                          --
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="bg-white rounded-xl shadow-lg p-6 slide-in card-hover"
+                data-aos="fade-left"
+                data-aos-delay="200"
+              >
+                <h2
+                  class="text-xl font-bold text-gray-800 mb-4 flex items-center"
+                >
+                  <i
+                    data-feather="clock"
+                    class="h-5 w-5 mr-2 text-blue-600"
+                  ></i>
+                  Last Updated
+                </h2>
+                <p class="text-gray-600" id="stockTimestamp">--</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <custom-footer></custom-footer>
+
+    <div
+      id="notification-container"
+      class="fixed top-4 right-4 z-[9999] space-y-2"
+    ></div>
+
+    <script src="components/navbar.js"></script>
+    <script src="components/footer.js"></script>
+    <!-- NOUVEAU: Inclure le script de rafraîchissement des détails -->
+    <script src="stock-details.js"></script>
+
+    <script>
+      // Variable globale pour stocker l'instance du graphique Chart.js
+      let priceChartInstance = null;
+
+      // Initialiser AOS et Feather Icons
+      document.addEventListener("DOMContentLoaded", function () {
+        AOS.init({ duration: 800, easing: "ease-in-out", once: true });
+        feather.replace();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const symbol = urlParams.get("symbol");
+
+        if (!symbol) {
+          showNotification("No stock symbol provided in URL", "error");
+          document.getElementById("loadingState").classList.add("hidden");
+          document.getElementById("stockName").textContent = "Error: No Symbol";
+          return;
+        }
+
+        // Charger les données initiales
+        loadStockDetails(symbol);
+
+        // MODIFICATION CLÉ: Démarrer le rafraîchissement après le chargement initial
+        if (typeof window.startDetailsAutoRefresh === "function") {
+          window.startDetailsAutoRefresh(symbol);
+        }
+      });
+
+      // Assurez-vous d'arrêter le rafraîchissement lorsque l'utilisateur quitte la page
+      window.addEventListener("beforeunload", stopDetailsAutoRefresh);
+
+      // --- UTILS (Répétés car stock-details.html est une page séparée) ---
+      function showNotification(message, type = "info") {
+        let container = document.getElementById("notification-container");
+        if (!container) return;
+
+        const notification = document.createElement("div");
+        let bgColor, icon;
+        switch (type) {
+          case "success":
+            bgColor = "bg-green-500";
+            icon = '<i data-feather="check-circle" class="h-5 w-5 mr-2"></i>';
+            break;
+          case "error":
+            bgColor = "bg-red-500";
+            icon = '<i data-feather="x-circle" class="h-5 w-5 mr-2"></i>';
+            break;
+          default:
+            bgColor = "bg-blue-500";
+            icon = '<i data-feather="info" class="h-5 w-5 mr-2"></i>';
+            break;
+        }
+
+        notification.className = `p-4 rounded-lg shadow-xl text-white max-w-sm flex items-center ${bgColor} animate-fade-in`;
+        notification.innerHTML = `${icon}<span>${message}</span>`;
+        container.appendChild(notification);
+        feather.replace();
+        setTimeout(() => {
+          notification.remove();
+        }, 4000);
+      }
+
+      function formatCurrency(price) {
+        const numPrice = parseFloat(price);
+        if (isNaN(numPrice) || numPrice === 0) return "N/A";
+
+        return new Intl.NumberFormat("en-MA", {
+          style: "currency",
+          currency: "MAD",
+          minimumFractionDigits: 2,
+        }).format(numPrice);
+      }
+
+      function formatSimplePrice(price) {
+        const numPrice = parseFloat(price);
+        if (isNaN(numPrice) || numPrice === 0) return "N/A";
+        return numPrice.toFixed(2);
+      }
+
+      function formatNumber(num) {
+        const numValue = parseInt(num);
+        if (isNaN(numValue)) return "N/A";
+        return new Intl.NumberFormat("en-MA").format(numValue);
+      }
+
+      function getPriceChangeColor(change) {
+        const numChange = parseFloat(change);
+        if (isNaN(numChange)) return "text-gray-600";
+        if (numChange > 0) return "price-up";
+        if (numChange < 0) return "price-down";
+        return "text-gray-600";
+      }
+
+      function formatPercentage(change) {
+        const numChange = parseFloat(change);
+        if (isNaN(numChange)) return "0.00%";
+        const sign = numChange > 0 ? "+" : "";
+        return `${sign}${numChange.toFixed(2)}%`;
+      }
+
+      // --- FONCTION CLÉ: Chargement des détails via API (mise à jour) ---
+      async function loadStockDetails(symbol) {
+        const isInitialLoad = document
+          .getElementById("stockContent")
+          .classList.contains("hidden");
+
+        // Afficher le spinner uniquement au premier chargement
+        if (isInitialLoad) {
+          document.getElementById("loadingState").classList.remove("hidden");
+        }
+
+        try {
+          const apiResponse = await fetch(`/api/stocks/${symbol}`);
+
+          if (!apiResponse.ok) {
+            let errorText = await apiResponse.text();
+            throw new Error(
+              `API returned status ${apiResponse.status}: ${errorText.substring(
+                0,
+                100
+              )}...`
+            );
+          }
+
+          const data = await apiResponse.json();
+          const details = data.details;
+          const chartData = data.chart_data;
+
+          if (!details) {
+            throw new Error("No 'details' object found in API response.");
+          }
+
+          // --- Mettre à jour l'interface utilisateur ---
+          if (isInitialLoad) {
+            document.getElementById("loadingState").classList.add("hidden");
+            document.getElementById("stockContent").classList.remove("hidden");
+          }
+
+          document.getElementById("stockName").textContent =
+            details.name || details.symbol;
+          document.getElementById("stockSymbol").textContent = details.symbol;
+          document.getElementById("pageTitle").textContent = `${
+            details.name || details.symbol
+          } Details - MaFinance Pro`;
+
+          const change = parseFloat(details.change || 0);
+          const changeElement = document.getElementById("stockChange");
+          changeElement.textContent = formatPercentage(change);
+          changeElement.className = `px-3 py-1 rounded-full text-sm font-semibold ${
+            change > 0
+              ? "bg-green-100 text-green-800"
+              : change < 0
+              ? "bg-red-100 text-red-800"
+              : "bg-gray-100 text-gray-800"
+          }`;
+
+          document.getElementById("stockPrice").textContent = formatCurrency(
+            details.price || 0
+          );
+
+          // Mise à jour des Metrics
+          document.getElementById("stockVolume").textContent = formatNumber(
+            details.quantite_echangee || 0
+          );
+          document.getElementById("stockVolumeMad").textContent =
+            formatCurrency(details.volume_mad || 0);
+          document.getElementById("stockMarketCap").textContent =
+            details.capitalisation || "N/A";
+          document.getElementById("stockTransactions").textContent =
+            formatNumber(details.nombre_transactions || 0);
+          document.getElementById("stockStatus").textContent =
+            details.statut || "N/A";
+
+          // Trading Range
+          document.getElementById("stockReference").textContent =
+            details.cours_reference || "N/A";
+          document.getElementById("stockOpening").textContent =
+            details.ouverture || "N/A";
+          document.getElementById("stockHigh").textContent =
+            details.plus_haut_jour || "N/A";
+          document.getElementById("stockLow").textContent =
+            details.plus_bas_jour || "N/A";
+
+          // Order Book Snapshot
+          document.getElementById("stockBestBuy").textContent =
+            details.meilleur_prix_achat || "N/A";
+          document.getElementById("stockBestSell").textContent =
+            details.meilleur_prix_vente || "N/A";
+          document.getElementById("stockBestBuyQty").textContent = formatNumber(
+            details.quantite_meilleur_prix_achat || 0
+          );
+          document.getElementById("stockBestSellQty").textContent =
+            formatNumber(details.quantite_meilleur_prix_vente || 0);
+
+          // Description
+          const description =
+            details.description.split(". Source:")[0] ||
+            "No detailed description available.";
+          document.getElementById("stockDescription").textContent = description;
+
+          // Last Updated (Utiliser le temps actuel ou le temps de l'API si disponible)
+          document.getElementById("stockTimestamp").textContent =
+            new Date().toLocaleString();
+
+          // --- Initialiser/Mettre à jour le graphique ---
+          if (chartData && document.getElementById("stockChart")) {
+            // Détruire l'instance précédente si elle existe
+            if (priceChartInstance) {
+              priceChartInstance.destroy();
+            }
+
+            const ctx = document.getElementById("stockChart").getContext("2d");
+            priceChartInstance = new Chart(ctx, {
+              // Stocker la nouvelle instance
+              type: "line",
+              data: {
+                labels: chartData.labels,
+                datasets: [
+                  {
+                    label: "Price (MAD)",
+                    data: chartData.prices,
+                    borderColor: change >= 0 ? "#10b981" : "#ef4444",
+                    backgroundColor:
+                      change >= 0
+                        ? "rgba(16, 185, 129, 0.1)"
+                        : "rgba(239, 68, 68, 0.1)",
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 5,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                  x: { grid: { display: false } },
+                  y: {
+                    beginAtZero: false,
+                    ticks: {
+                      callback: function (value) {
+                        return formatSimplePrice(value) + " MAD";
+                      },
+                    },
+                  },
+                },
+              },
+            });
+          }
+
+          if (isInitialLoad) {
+            showNotification(
+              `Details for ${symbol} loaded successfully from API`,
+              "success"
+            );
+          }
+        } catch (error) {
+          console.error("Error loading stock details:", error);
+          if (isInitialLoad) {
+            document.getElementById("loadingState").classList.add("hidden");
+            document.getElementById(
+              "stockName"
+            ).textContent = `Error loading: ${symbol}`;
+          }
+          showNotification(
+            `Failed to load stock details: ${error.message}`,
+            "error"
+          );
+        }
+      }
+    </script>
+  </body>
+</html>

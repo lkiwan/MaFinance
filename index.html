@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MaFinance Pro - Moroccan Stocks Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+  </head>
+  <body class="bg-gray-50 min-h-screen flex flex-col">
+    <custom-navbar></custom-navbar>
+
+    <!-- Hero Section -->
+    <section
+      class="relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-700 text-white py-20"
+    >
+      <div class="absolute inset-0 bg-black opacity-20"></div>
+      <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+          <h1 class="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">
+            MaFinance Pro
+          </h1>
+          <p class="text-xl md:text-2xl mb-8 opacity-90">
+            Professional Moroccan Stocks Analysis & Real-time Market Data
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="/stocks.html"
+              class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              Explore Stocks
+            </a>
+            <a
+              href="/register.html"
+              class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300"
+            >
+              Get Started
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-white">
+      <div class="container mx-auto px-6">
+        <h2 class="text-4xl font-bold text-center text-gray-800 mb-16">
+          Why Choose MaFinance Pro?
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div
+            class="text-center p-6 rounded-xl hover:shadow-lg transition-all duration-300"
+          >
+            <div
+              class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i data-feather="trending-up" class="text-blue-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">
+              Real-time Data
+            </h3>
+            <p class="text-gray-600">
+              Live market data from Moroccan stock exchange with yfinance
+              integration
+            </p>
+          </div>
+          <div
+            class="text-center p-6 rounded-xl hover:shadow-lg transition-all duration-300"
+          >
+            <div
+              class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i data-feather="bar-chart-2" class="text-green-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">
+              Advanced Analytics
+            </h3>
+            <p class="text-gray-600">
+              Detailed stock analysis with historical data and performance
+              metrics
+            </p>
+          </div>
+          <div
+            class="text-center p-6 rounded-xl hover:shadow-lg transition-all duration-300"
+          >
+            <div
+              class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i data-feather="shield" class="text-purple-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">
+              Secure Platform
+            </h3>
+            <p class="text-gray-600">
+              Enterprise-grade security with encrypted data and secure
+              authentication
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-gray-100">
+      <div class="container mx-auto px-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div>
+            <div class="text-3xl font-bold text-blue-600 mb-2">50+</div>
+            <div class="text-gray-600">Moroccan Stocks</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-green-600 mb-2">24/7</div>
+            <div class="text-gray-600">Market Monitoring</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-purple-600 mb-2">99.9%</div>
+            <div class="text-gray-600">Uptime</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-orange-600 mb-2">10K+</div>
+            <div class="text-gray-600">Active Users</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOUVEAU: Featured Stock / Market Head Section --> 
+    <section class="py-20 bg-white"> 
+      <div class="container mx-auto px-6"> 
+        <h2 class="text-4xl font-bold text-center text-gray-800 mb-12" id="marketHeadTitle"> 
+          Market Head 
+        </h2> 
+    
+        <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-2xl p-8 border-t-4 border-blue-600"> 
+          <div id="featuredStockContent" class="hidden"> 
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between"> 
+              <!-- Stock Info --> 
+              <div> 
+                <h3 class="text-3xl font-bold text-gray-800 mb-1" id="featuredStockName"> 
+                  -- 
+                </h3> 
+                <div class="flex items-center"> 
+                  <span class="text-lg text-gray-600 mr-4" id="featuredStockSymbol">--</span> 
+                  <span 
+                    class="px-3 py-1 rounded-full text-sm font-semibold" 
+                    id="featuredStockChange" 
+                    >0.00%</span 
+                  > 
+                </div> 
+              </div> 
+    
+              <!-- Price & Button --> 
+              <div class="mt-4 md:mt-0 text-left md:text-right"> 
+                <p class="text-sm text-gray-500">Current Price</p> 
+                <p class="text-3xl font-bold text-gray-800 mb-4" id="featuredStockPrice"> 
+                  -- MAD 
+                </p> 
+                <!-- Button to view details of the featured stock --> 
+                <a 
+                  href="#" 
+                  id="featuredDetailsLink" 
+                  class="inline-flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 transform hover:scale-105" 
+                > 
+                  <i data-feather="external-link" class="h-5 w-5 mr-2"></i> 
+                  View Details 
+                </a> 
+              </div> 
+            </div> 
+          </div> 
+          <div id="featuredLoading" class="text-center py-4"> 
+              <div class="loading-spinner mb-4 mx-auto" style="border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #3b82f6; animation: spin 1s linear infinite;"></div> 
+              <p class="text-gray-600">Loading Market Head...</p> 
+          </div> 
+        </div> 
+      </div> 
+    </section>
+
+    <custom-footer></custom-footer>
+
+    <script src="components/navbar.js"></script>
+    <script src="components/footer.js"></script>
+    <script src="script.js"></script>
+    <script>
+      feather.replace();
+      // Vanta.js animation
+      VANTA.GLOBE({
+        el: ".relative",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.0,
+        minWidth: 200.0,
+        scale: 1.0,
+        scaleMobile: 1.0,
+        color: 0x3b82f6,
+        backgroundColor: 0x4f46e5,
+        size: 1.0,
+      });
+      
+      // Utility functions for formatting
+      function formatCurrency(price) {
+        const numPrice = parseFloat(price);
+        if (isNaN(numPrice) || numPrice === 0) return 'N/A';
+        
+        return new Intl.NumberFormat('en-MA', { 
+            style: 'currency', 
+            currency: 'MAD',
+            minimumFractionDigits: 2
+        }).format(numPrice);
+      }
+      
+      function formatPercentage(change) {
+        const numChange = parseFloat(change);
+        if (isNaN(numChange)) return '0.00%';
+        const sign = numChange > 0 ? '+' : '';
+        return `${sign}${numChange.toFixed(2)}%`;
+      }
+      
+      function getPriceChangeColor(change) {
+        const numChange = parseFloat(change);
+        if (isNaN(numChange)) return 'text-gray-600';
+        if (numChange > 0) return 'bg-green-100 text-green-800';
+        if (numChange < 0) return 'bg-red-100 text-red-800';
+        return 'bg-gray-100 text-gray-800';
+      }
+      
+      // Load Market Head data
+      async function loadMarketHead() {
+        try {
+          const response = await fetch('/api/stocks');
+          
+          if (!response.ok) {
+            throw new Error(`API returned status ${response.status}`);
+          }
+          
+          const data = await response.json();
+          
+          if (!data.stocks || data.stocks.length === 0) {
+            throw new Error('No stocks data available');
+          }
+          
+          // Get the first stock as the Market Head
+          const featuredStock = data.stocks[0];
+          
+          // Update the UI elements
+          document.getElementById('featuredStockName').textContent = featuredStock.name;
+          document.getElementById('featuredStockSymbol').textContent = featuredStock.symbol;
+          document.getElementById('featuredStockPrice').textContent = formatCurrency(featuredStock.price);
+          
+          const changeElement = document.getElementById('featuredStockChange');
+          changeElement.textContent = formatPercentage(featuredStock.change);
+          changeElement.className = `px-3 py-1 rounded-full text-sm font-semibold ${getPriceChangeColor(featuredStock.change)}`;
+          
+          // Update the details link
+          document.getElementById('featuredDetailsLink').href = `stock-details.html?symbol=${featuredStock.symbol}`;
+          
+          // Hide loading, show content
+          document.getElementById('featuredLoading').classList.add('hidden');
+          document.getElementById('featuredStockContent').classList.remove('hidden');
+          
+        } catch (error) {
+          console.error('Error loading Market Head:', error);
+          document.getElementById('marketHeadTitle').textContent = 'Market Head (Unavailable)';
+          document.getElementById('featuredLoading').innerHTML = `
+            <p class="text-red-600">Unable to load market data. Please try again later.</p>
+          `;
+        }
+      }
+      
+      // Initialize when DOM is loaded
+      document.addEventListener('DOMContentLoaded', function() {
+        loadMarketHead();
+      });
+    </script>
+  </body>
+</html>

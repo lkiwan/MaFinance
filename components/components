@@ -1,0 +1,113 @@
+class CustomFooter extends HTMLElement {
+    connectedCallback() {
+        this.attachShadow({ mode: 'open' });
+        this.shadowRoot.innerHTML = `
+            <style>
+                footer {
+                    background: #1f2937;
+                    color: white;
+                    padding: 3rem 1rem;
+                    margin-top: auto;
+                }
+                .footer-container {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 2rem;
+                }
+                .footer-section h3 {
+                    font-weight: 600;
+                    margin-bottom: 1rem;
+                    color: #f9fafb;
+                }
+                .footer-links {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                }
+                .footer-links li {
+                    margin-bottom: 0.5rem;
+                }
+                .footer-links a {
+                    color: #d1d5db;
+                    text-decoration: none;
+                    transition: color 0.2s;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+                .footer-links a:hover {
+                    color: #3b82f6;
+                }
+                .footer-bottom {
+                    border-top: 1px solid #374151;
+                    margin-top: 2rem;
+                    padding-top: 2rem;
+                    text-align: center;
+                    color: #9ca3af;
+                }
+                .social-links {
+                    display: flex;
+                    gap: 1rem;
+                    margin-top: 1rem;
+                }
+                .social-links a {
+                    color: #d1d5db;
+                    transition: color 0.2s;
+                }
+                .social-links a:hover {
+                    color: #3b82f6;
+                }
+            </style>
+            <footer>
+                <div class="footer-container">
+                    <div class="footer-section">
+                        <h3>MaFinance Pro</h3>
+                        <p class="text-gray-400">
+                            Professional platform for Moroccan stock market analysis and real-time data.
+                        </p>
+                        <div class="social-links">
+                            <a href="#"><i data-feather="twitter"></i></a>
+                            <a href="#"><i data-feather="linkedin"></i></a>
+                            <a href="#"><i data-feather="github"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h3>Quick Links</h3>
+                        <ul class="footer-links">
+                            <li><a href="/"><i data-feather="home"></i> Home</a></li>
+                            <li><a href="/stocks.html"><i data-feather="bar-chart-2"></i> Stocks</a></li>
+                            <li><a href="/about.html"><i data-feather="info"></i> About</a></li>
+                            <li><a href="/contact.html"><i data-feather="mail"></i> Contact</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h3>Resources</h3>
+                        <ul class="footer-links">
+                            <li><a href="/api/docs"><i data-feather="book"></i> API Docs</a></li>
+                            <li><a href="/privacy.html"><i data-feather="shield"></i> Privacy Policy</a></li>
+                            <li><a href="/terms.html"><i data-feather="file-text"></i> Terms of Service</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h3>Support</h3>
+                        <ul class="footer-links">
+                            <li><a href="/help.html"><i data-feather="help-circle"></i> Help Center</a></li>
+                            <li><a href="/faq.html"><i data-feather="message-circle"></i> FAQ</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom">
+                    <p>&copy; 2024 MaFinance Pro. All rights reserved.</p>
+                </div>
+            </footer>
+        `;
+    }
+}
+
+customElements.define('custom-footer', CustomFooter);
