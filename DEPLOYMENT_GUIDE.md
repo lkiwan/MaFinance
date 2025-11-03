@@ -9,6 +9,7 @@ Render offers free hosting for Flask apps + free PostgreSQL database.
 ### Step 1: Prepare Your Code
 
 All files are already prepared! You have:
+
 - ✅ `requirements.txt` - Python dependencies
 - ✅ `start.sh` - Start script for Render
 - ✅ `.gitignore` - Files to exclude from Git
@@ -17,6 +18,7 @@ All files are already prepared! You have:
 ### Step 2: Push to GitHub
 
 1. **Initialize Git repository** (if not already done):
+
 ```bash
 git init
 git add .
@@ -38,6 +40,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 ```
 
 2. **Create a GitHub repository**:
+
    - Go to https://github.com/new
    - Name it: `mafinance-pro`
    - Make it Public or Private
@@ -45,6 +48,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
    - Click "Create repository"
 
 3. **Push your code**:
+
 ```bash
 git remote add origin https://github.com/YOUR_USERNAME/mafinance-pro.git
 git branch -M main
@@ -54,10 +58,12 @@ git push -u origin main
 ### Step 3: Deploy on Render
 
 1. **Sign up for Render**:
+
    - Go to https://render.com
    - Sign up with GitHub (it's free!)
 
 2. **Create PostgreSQL Database**:
+
    - Click "New +" → "PostgreSQL"
    - Name: `mafinance-db`
    - Database: `mafinance`
@@ -68,6 +74,7 @@ git push -u origin main
    - **IMPORTANT**: Copy the "Internal Database URL" (you'll need it)
 
 3. **Create Web Service**:
+
    - Click "New +" → "Web Service"
    - Connect your GitHub repository
    - Select your `mafinance-pro` repository
@@ -81,16 +88,17 @@ git push -u origin main
      - **Plan**: **Free** (select this!)
 
 4. **Add Environment Variables**:
+
    - Scroll to "Environment Variables"
    - Click "Add Environment Variable"
    - Add these:
 
-   | Key | Value |
-   |-----|-------|
-   | `DATABASE_URL` | Paste the Internal Database URL from step 2 |
-   | `SECRET_KEY` | Generate random string: `python -c "import secrets; print(secrets.token_hex(32))"` |
-   | `FLASK_ENV` | `production` |
-   | `FLASK_DEBUG` | `False` |
+   | Key            | Value                                                                              |
+   | -------------- | ---------------------------------------------------------------------------------- |
+   | `DATABASE_URL` | Paste the Internal Database URL from step 2                                        |
+   | `SECRET_KEY`   | Generate random string: `python -c "import secrets; print(secrets.token_hex(32))"` |
+   | `FLASK_ENV`    | `production`                                                                       |
+   | `FLASK_DEBUG`  | `False`                                                                            |
 
 5. **Deploy**:
    - Click "Create Web Service"
@@ -128,6 +136,7 @@ Railway also offers free hosting with PostgreSQL.
 ### Issue: Database tables not created
 
 **Solution**: Manually run the init script:
+
 ```bash
 # In Render dashboard, go to Shell tab and run:
 python init_db.py
@@ -136,6 +145,7 @@ python init_db.py
 ### Issue: "Module not found" errors
 
 **Solution**: Check requirements.txt includes all dependencies:
+
 ```bash
 pip freeze > requirements.txt
 git add requirements.txt
@@ -146,6 +156,7 @@ git push
 ### Issue: App crashes on startup
 
 **Solution**: Check logs in Render dashboard:
+
 - Click on your web service
 - Go to "Logs" tab
 - Look for error messages
@@ -153,6 +164,7 @@ git push
 ### Issue: Database connection fails
 
 **Solution**:
+
 1. Verify DATABASE_URL is set correctly
 2. Make sure you used the "Internal Database URL"
 3. Restart the web service
@@ -162,6 +174,7 @@ git push
 ## 📊 Free Tier Limitations
 
 ### Render Free Tier:
+
 - ✅ 512 MB RAM
 - ✅ Automatic HTTPS
 - ✅ Custom domains
@@ -169,6 +182,7 @@ git push
 - ⚠️ 750 hours/month (enough for 24/7)
 
 ### PostgreSQL Free Tier:
+
 - ✅ 256 MB RAM
 - ✅ 1 GB Storage
 - ✅ Expires after 90 days (then you need to recreate it)
@@ -179,19 +193,23 @@ git push
 ## 🔒 Security Best Practices
 
 1. **Never commit secrets**:
+
    - `.env` is in `.gitignore`
    - Use Render environment variables
    - Rotate SECRET_KEY regularly
 
 2. **Enable HTTPS**:
+
    - Render provides free SSL automatically
 
 3. **Set strong SECRET_KEY**:
+
 ```bash
 python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
 4. **Regular updates**:
+
 ```bash
 pip list --outdated
 pip install --upgrade flask pandas
@@ -204,18 +222,21 @@ pip install --upgrade flask pandas
 Free tier sleeps after 15 min. Solutions:
 
 ### Option 1: UptimeRobot (Free)
+
 1. Sign up: https://uptimerobot.com
 2. Add monitor for your Render URL
 3. Ping every 5 minutes
 4. ✅ Keeps app awake 24/7
 
 ### Option 2: Cron Job (GitHub Actions)
+
 Add `.github/workflows/keep-alive.yml`:
+
 ```yaml
 name: Keep Alive
 on:
   schedule:
-    - cron: '*/14 * * * *'  # Every 14 minutes
+    - cron: "*/14 * * * *" # Every 14 minutes
 jobs:
   keep-alive:
     runs-on: ubuntu-latest
@@ -231,12 +252,14 @@ jobs:
 If your app grows popular, upgrade to paid plans:
 
 ### Render Paid Plans:
+
 - **Starter**: $7/month
   - No sleep
   - Better performance
   - More RAM
 
 ### PostgreSQL Paid Plans:
+
 - **Starter**: $7/month
   - More storage
   - Better performance
@@ -293,4 +316,4 @@ Share your live URL: `https://mafinance-pro.onrender.com`
 
 ---
 
-*Made with ❤️ in Morocco | Powered by Casablanca Stock Exchange Data*
+_Made with ❤️ in Morocco | Powered by Casablanca Stock Exchange Data_

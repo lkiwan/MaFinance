@@ -23,7 +23,8 @@
       "Bash(taskkill:*)",
       "Bash(timeout 5 tail:*)",
       "Bash(pip3 list:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(git log:*)"
     ],
     "deny": [],
     "ask": []
