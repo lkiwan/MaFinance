@@ -1,0 +1,31 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: mafinance-db
+    env: ruby
+    plan: free
+    databases:
+      - name: mafinance
+        databaseName: mafinance
+        user: mafinance_user
+
+  # Web Service
+  - type: web
+    name: mafinance-pro
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python init_db.py"
+    startCommand: "bash start.sh"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mafinance-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: false
+      - key: PYTHON_VERSION
+        value: 3.11.0

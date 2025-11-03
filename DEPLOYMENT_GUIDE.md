@@ -2,7 +2,26 @@
 
 Deploy your Moroccan stock market dashboard online for **FREE** using Render.
 
-## 🚀 Option 1: Deploy on Render (Recommended)
+## ⚡ ONE-CLICK Deploy on Render (Easiest!)
+
+1. **Push your code to GitHub** (if not already done)
+2. **Click this button**:
+
+   [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/lkiwan/MaFinance)
+
+3. **Done!** Your app will be live in 5-10 minutes at your Render URL
+
+The `render.yaml` file automatically configures everything:
+- ✅ Creates PostgreSQL database
+- ✅ Sets up web service
+- ✅ Configures environment variables
+- ✅ Initializes database tables
+
+---
+
+## 🚀 Option 1: Manual Deploy on Render
+
+If the one-click button doesn't work, follow these steps:
 
 Render offers free hosting for Flask apps + free PostgreSQL database.
 
@@ -115,7 +134,7 @@ git push -u origin main
 
 ---
 
-## 🎯 Option 2: Deploy on Railway (Alternative)
+## 🎯 Option 2: Deploy on Railway (Alternative Free Platform)
 
 Railway also offers free hosting with PostgreSQL.
 
