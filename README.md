@@ -6,6 +6,24 @@ A professional web application for tracking and analyzing Moroccan stock market 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/flask-3.0.0-green.svg)
 
+---
+
+## ⚡ Deploy to Production (FREE)
+
+Deploy your own instance online in 5 minutes - no credit card required:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/lkiwan/MaFinance)
+
+**Includes:**
+- ✅ Live web app with HTTPS/SSL
+- ✅ PostgreSQL database (1GB storage)
+- ✅ Auto-deploy on git push
+- ✅ User accounts, watchlists, and alerts
+
+📖 **Full deployment guide**: [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
+
+---
+
 ## 🌟 Features
 
 - **Real-time Market Data**: Live stock prices from Casablanca Stock Exchange
@@ -37,13 +55,17 @@ The application tracks 60+ Moroccan companies across multiple sectors:
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### Option 1: Deploy Online (Recommended)
+Click the **"Deploy to Render"** button above for instant deployment with PostgreSQL database, user accounts, watchlists, and alerts.
+
+### Option 2: Run Locally
+
+#### Prerequisites
 
 - Python 3.8 or higher
-- Google Chrome browser (for web scraping)
-- ChromeDriver (matching your Chrome version)
+- pip package manager
 
-### Installation
+#### Installation
 
 1. **Clone the repository**
    ```bash
@@ -51,36 +73,30 @@ The application tracks 60+ Moroccan companies across multiple sectors:
    cd MaFinance
    ```
 
-2. **Create a virtual environment**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies**
+2. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Install ChromeDriver**
-   - Download ChromeDriver from [chromedriver.chromium.org](https://chromedriver.chromium.org/)
-   - Ensure it matches your Chrome browser version
-   - Add ChromeDriver to your system PATH
-
-### Running the Application
-
-1. **Scrape the latest market data** (optional, CSV files included)
+3. **Initialize database**
    ```bash
-   python bvc_hourly_scraper.py
+   python init_db.py
    ```
 
-2. **Start the Flask server**
+4. **Start the application**
    ```bash
-   python app.py
+   bash start.sh
    ```
 
-3. **Open your browser**
+5. **Open your browser**
    Navigate to `http://localhost:5000`
+
+**Features available locally:**
+- Stock dashboard and search
+- User registration and login
+- Watchlist management
+- Price alerts
+- All features work with SQLite database
 
 ## 📁 Project Structure
 
@@ -111,15 +127,19 @@ MaFinance/
 
 ### API Endpoints
 
-The application provides two main API endpoints:
-
-- **GET /api/stocks**
-  - Returns all stocks with their latest data
-  - Response includes sectors list and timestamp
-
-- **GET /api/stocks/<symbol>**
-  - Returns detailed information for a specific stock
-  - Includes chart data for visualization
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/stocks` | GET | Get all Moroccan stocks |
+| `/api/stocks/<symbol>` | GET | Get stock details by symbol |
+| `/api/watchlist` | GET | Get user's watchlist |
+| `/api/watchlist` | POST | Add stock to watchlist |
+| `/api/watchlist/<id>` | DELETE | Remove from watchlist |
+| `/api/alerts` | GET | Get user's price alerts |
+| `/api/alerts` | POST | Create new price alert |
+| `/api/alerts/<id>` | DELETE | Delete price alert |
+| `/register` | POST | Register new user account |
+| `/login` | POST | User login |
+| `/logout` | POST | User logout |
 
 ### Data Sources
 
@@ -183,16 +203,22 @@ The application uses web scraping to fetch data from:
 
 ## 🔮 Future Enhancements
 
-- [ ] Add database support (PostgreSQL/SQLite)
-- [ ] Implement user authentication
+**Recently Added:**
+- ✅ Database support (PostgreSQL/SQLite)
+- ✅ User authentication and registration
+- ✅ User watchlists
+- ✅ Stock price alerts
+- ✅ One-click Render deployment
+
+**Coming Soon:**
 - [ ] Real historical price data integration
-- [ ] User portfolios and watchlists
-- [ ] Stock price alerts and notifications
+- [ ] Email notifications for alerts
 - [ ] Advanced charting with technical indicators
+- [ ] Portfolio tracking with performance analytics
 - [ ] Mobile app (React Native)
-- [ ] Email reports and newsletters
 - [ ] API rate limiting and caching
 - [ ] Multi-language support (French/Arabic)
+- [ ] Real-time price updates (WebSockets)
 
 ## 🤝 Contributing
 
