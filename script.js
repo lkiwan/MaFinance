@@ -272,22 +272,55 @@ function renderStocks(stocks) {
         
         // --- Event Listeners for Buttons ---
         
-        // 1. Toggle Details Button
+        // 1. Add to Watchlist Button
+        const watchlistButton = stockCard.querySelector('.stock-add-watchlist');
+
+        // Check if stock is already in watchlist
+        watchlistManager.isInWatchlist(stock.symbol).then(isInWatchlist => {
+            if (isInWatchlist) {
+                watchlistButton.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+                watchlistButton.classList.add('bg-green-500', 'hover:bg-green-600');
+                watchlistButton.innerHTML = '<i data-feather="check" class="w-4 h-4"></i>';
+                watchlistButton.disabled = true;
+                watchlistButton.title = 'Already in Watchlist';
+                feather.replace();
+            }
+        });
+
+        watchlistButton.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const success = await watchlistManager.addToWatchlist({
+                symbol: stock.symbol,
+                name: stock.name,
+                price: stock.price
+            });
+
+            if (success) {
+                // Change button appearance to show it's added
+                watchlistButton.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+                watchlistButton.classList.add('bg-green-500', 'hover:bg-green-600');
+                watchlistButton.innerHTML = '<i data-feather="check" class="w-4 h-4"></i>';
+                watchlistButton.disabled = true;
+                watchlistButton.title = 'Already in Watchlist';
+                feather.replace();
+            }
+        });
+
+        // 2. Toggle Details Button
         const toggleButton = stockCard.querySelector('.stock-toggle-details');
         const detailsContainer = stockCard.querySelector('.stock-details-container');
-        
+
         toggleButton.addEventListener('click', (e) => {
             e.stopPropagation();
             detailsContainer.classList.toggle('hidden');
-            toggleButton.textContent = detailsContainer.classList.contains('hidden') ? 'Voir Détails' : 'Masquer Détails';
         });
-        
-        // 2. View Details (Page Navigation)
+
+        // 3. View Details (Page Navigation)
         const viewDetailsLink = stockCard.querySelector('.stock-view-details');
         // MODIFICATION CLÉ: Assurez-vous que le lien navigue vers la page de détails avec le symbole.
         viewDetailsLink.href = `stock-details.html?symbol=${encodeURIComponent(stock.symbol)}`;
-        
-        // 3. Analyse (Modal)
+
+        // 4. Analyse (Modal)
         const detailsLink = stockCard.querySelector('.stock-details-link');
         detailsLink.href = `#${stock.symbol}`;
         detailsLink.addEventListener('click', (e) => {
@@ -437,9 +470,11 @@ async function openStockModal(stock) {
             <div>
                 <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Description</h3>
                 <p class="text-gray-600 mb-6">${details.description.split('. Source:')[0] || 'No detailed description available.'}</p>
-                
-                <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Performance Chart (Last 5 Days Simulated)</h3>
-                <canvas id="stockChart" class="w-full h-24"></canvas>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Performance Chart (Last 5 Days)</h3>
+                <div style="position: relative; height: 300px; width: 100%; max-width: 100%;">
+                    <canvas id="stockChart"></canvas>
+                </div>
             </div>
         </div>
     `;
@@ -448,6 +483,18 @@ async function openStockModal(stock) {
     setTimeout(() => {
         if (typeof Chart !== 'undefined' && document.getElementById('stockChart')) {
             const ctx = document.getElementById('stockChart').getContext('2d');
+            const isPositive = details.change >= 0;
+
+            // Create gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            if (isPositive) {
+                gradient.addColorStop(0, 'rgba(16, 185, 129, 0.3)');
+                gradient.addColorStop(1, 'rgba(16, 185, 129, 0.01)');
+            } else {
+                gradient.addColorStop(0, 'rgba(239, 68, 68, 0.3)');
+                gradient.addColorStop(1, 'rgba(239, 68, 68, 0.01)');
+            }
+
             new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -455,24 +502,94 @@ async function openStockModal(stock) {
                     datasets: [{
                         label: 'Price (MAD)',
                         data: chartData.prices,
-                        borderColor: details.change >= 0 ? '#10b981' : '#ef4444', 
-                        backgroundColor: details.change >= 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                        borderColor: isPositive ? '#10b981' : '#ef4444',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
                         tension: 0.4,
-                        fill: true
+                        fill: true,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: isPositive ? '#10b981' : '#ef4444',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointHoverBackgroundColor: isPositive ? '#10b981' : '#ef4444',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 3
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: isPositive ? '#10b981' : '#ef4444',
+                            borderWidth: 2,
+                            padding: 12,
+                            displayColors: false,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold',
+                                family: 'system-ui'
+                            },
+                            bodyFont: {
+                                size: 13,
+                                family: 'system-ui'
+                            },
+                            callbacks: {
+                                title: function(context) {
+                                    return context[0].label;
+                                },
+                                label: function(context) {
+                                    return 'Price: ' + stockManager.formatCurrency(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
                     scales: {
-                        x: { grid: { display: false } },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12,
+                                    family: 'system-ui'
+                                },
+                                color: '#6b7280'
+                            },
+                            border: {
+                                display: true,
+                                color: '#e5e7eb'
+                            }
+                        },
                         y: {
                             beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false
+                            },
                             ticks: {
+                                font: {
+                                    size: 12,
+                                    family: 'system-ui'
+                                },
+                                color: '#6b7280',
+                                padding: 8,
                                 callback: function(value) {
                                     return stockManager.formatCurrency(value);
                                 }
+                            },
+                            border: {
+                                display: true,
+                                color: '#e5e7eb'
                             }
                         }
                     }

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MaFinance Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50">
+    <custom-navbar></custom-navbar>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Dashboard Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+            <p class="text-gray-600">Welcome back! Here's your portfolio overview and market insights.</p>
+        </div>
+
+        <!-- Auth Message -->
+        <div id="authMessage" class="hidden mb-6 bg-yellow-50 border-l-4 border-yellow-400 p-4">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i data-feather="alert-circle" class="text-yellow-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-yellow-700">
+                        Please <a href="/login.html" class="font-medium underline hover:text-yellow-800">login</a> to access your personalized dashboard.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Portfolio Value -->
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-semibold uppercase tracking-wider opacity-90">Portfolio Value</h3>
+                    <i data-feather="briefcase" class="opacity-75"></i>
+                </div>
+                <p class="text-3xl font-bold mb-2" id="portfolioValue">0 MAD</p>
+                <p class="text-sm opacity-75" id="portfolioChange">+0.00 MAD (0.00%)</p>
+            </div>
+
+            <!-- Total Profit/Loss -->
+            <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-semibold uppercase tracking-wider opacity-90">Total P&L</h3>
+                    <i data-feather="trending-up" class="opacity-75"></i>
+                </div>
+                <p class="text-3xl font-bold mb-2" id="totalPL">0 MAD</p>
+                <p class="text-sm opacity-75" id="totalPLPercent">0.00%</p>
+            </div>
+
+            <!-- Watchlist Items -->
+            <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-semibold uppercase tracking-wider opacity-90">Watchlist</h3>
+                    <i data-feather="star" class="opacity-75"></i>
+                </div>
+                <p class="text-3xl font-bold mb-2" id="watchlistCount">0</p>
+                <p class="text-sm opacity-75">Stocks tracked</p>
+            </div>
+
+            <!-- Active Alerts -->
+            <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-semibold uppercase tracking-wider opacity-90">Active Alerts</h3>
+                    <i data-feather="bell" class="opacity-75"></i>
+                </div>
+                <p class="text-3xl font-bold mb-2" id="activeAlerts">0</p>
+                <p class="text-sm opacity-75">Price alerts set</p>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column (2/3 width) -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Portfolio Performance Chart -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-gray-900">Portfolio Performance</h2>
+                        <span class="text-sm text-gray-600">Investment vs Current Value</span>
+                    </div>
+                    <div style="position: relative; height: 300px;">
+                        <canvas id="portfolioChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Market Overview -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Market Overview</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="text-center p-4 bg-blue-50 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-1">Market Cap</p>
+                            <p class="text-xl font-bold text-gray-900" id="totalMarketCap">0 B MAD</p>
+                        </div>
+                        <div class="text-center p-4 bg-green-50 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-1">Gainers</p>
+                            <p class="text-xl font-bold text-green-600" id="gainersCount">0</p>
+                        </div>
+                        <div class="text-center p-4 bg-red-50 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-1">Losers</p>
+                            <p class="text-xl font-bold text-red-600" id="losersCount">0</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Top Gainers -->
+                        <div>
+                            <h3 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <i data-feather="arrow-up" class="text-green-500"></i>
+                                Top Gainers
+                            </h3>
+                            <div class="space-y-2" id="topGainers">
+                                <!-- Will be populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Top Losers -->
+                        <div>
+                            <h3 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <i data-feather="arrow-down" class="text-red-500"></i>
+                                Top Losers
+                            </h3>
+                            <div class="space-y-2" id="topLosers">
+                                <!-- Will be populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Your Holdings -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-gray-900">Your Holdings</h2>
+                        <a href="/stocks.html" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All →</a>
+                    </div>
+                    <div id="holdingsTable">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column (1/3 width) -->
+            <div class="space-y-6">
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+                    <div class="space-y-3">
+                        <a href="/stocks.html" class="flex items-center gap-3 p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition">
+                            <i data-feather="search" class="text-blue-600"></i>
+                            <span class="font-medium text-gray-900">Browse Stocks</span>
+                        </a>
+                        <a href="/watchlist.html" class="flex items-center gap-3 p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition">
+                            <i data-feather="star" class="text-purple-600"></i>
+                            <span class="font-medium text-gray-900">Manage Watchlist</span>
+                        </a>
+                        <a href="/alerts.html" class="flex items-center gap-3 p-3 bg-orange-50 hover:bg-orange-100 rounded-lg transition">
+                            <i data-feather="bell" class="text-orange-600"></i>
+                            <span class="font-medium text-gray-900">Set Price Alerts</span>
+                        </a>
+                        <button onclick="window.location.reload()" class="w-full flex items-center gap-3 p-3 bg-green-50 hover:bg-green-100 rounded-lg transition">
+                            <i data-feather="refresh-cw" class="text-green-600"></i>
+                            <span class="font-medium text-gray-900">Refresh Data</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Watchlist Activity -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Your Watchlist</h2>
+                    <div id="watchlistActivity" class="space-y-3">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Price Alerts -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Active Alerts</h2>
+                    <div id="activeAlertsList" class="space-y-3">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Recent Activity</h2>
+                    <div id="recentActivity" class="space-y-3">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <custom-footer></custom-footer>
+
+    <script src="components/navbar.js"></script>
+    <script src="components/footer.js"></script>
+    <script src="dashboard.js"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

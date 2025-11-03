@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Professional Moroccan Stock Market Analysis - Real-time data from Casablanca Stock Exchange" />
     <title>MaFinance Pro - Moroccan Stocks Dashboard</title>
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
     <link rel="stylesheet" href="style.css" />
@@ -10,173 +11,420 @@
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body class="bg-gray-50 min-h-screen flex flex-col">
     <custom-navbar></custom-navbar>
 
-    <!-- Hero Section -->
+    <!-- Hero Section with Enhanced Design -->
     <section
-      class="relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-700 text-white py-20"
+      id="vanta-hero"
+      class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-purple-700 to-indigo-800 text-white py-24 md:py-32"
     >
-      <div class="absolute inset-0 bg-black opacity-20"></div>
+      <div class="absolute inset-0 bg-black opacity-30"></div>
+
+      <!-- Animated background elements -->
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute -top-1/2 -left-1/2 w-96 h-96 bg-blue-500 rounded-full opacity-20 blur-3xl animate-pulse"></div>
+        <div class="absolute -bottom-1/2 -right-1/2 w-96 h-96 bg-purple-500 rounded-full opacity-20 blur-3xl animate-pulse delay-1000"></div>
+      </div>
+
+      <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-5xl mx-auto text-center">
+          <div class="mb-6 inline-block">
+            <span class="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold">
+              🚀 Real-time Market Data from Casablanca Stock Exchange
+            </span>
+          </div>
+
+          <h1 class="text-5xl md:text-7xl font-extrabold mb-6 animate-fade-in leading-tight">
+            Your Gateway to
+            <span class="bg-gradient-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent">
+              Moroccan Financial Markets
+            </span>
+          </h1>
+
+          <p class="text-xl md:text-2xl mb-10 opacity-95 leading-relaxed max-w-3xl mx-auto">
+            Professional stock analysis, real-time market data, and advanced insights for the Casablanca Stock Exchange - All in one powerful platform.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <a
+              href="/stocks.html"
+              class="group bg-white text-blue-600 px-10 py-5 rounded-xl font-bold hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-2xl flex items-center justify-center"
+            >
+              <span>Explore Live Stocks</span>
+              <i data-feather="arrow-right" class="ml-2 group-hover:translate-x-1 transition-transform"></i>
+            </a>
+            <a
+              href="#market-overview"
+              class="border-2 border-white text-white px-10 py-5 rounded-xl font-bold hover:bg-white/10 backdrop-blur-sm transition-all duration-300 flex items-center justify-center"
+            >
+              <i data-feather="trending-up" class="mr-2"></i>
+              <span>View Market Overview</span>
+            </a>
+          </div>
+
+          <!-- Live Stats Ticker -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+              <div class="text-3xl font-bold mb-1" id="heroTotalStocks">78</div>
+              <div class="text-sm opacity-90">Tracked Stocks</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+              <div class="text-3xl font-bold mb-1 text-green-300" id="heroGainers">--</div>
+              <div class="text-sm opacity-90">Top Gainers</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+              <div class="text-3xl font-bold mb-1 text-red-300" id="heroLosers">--</div>
+              <div class="text-sm opacity-90">Top Losers</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+              <div class="text-3xl font-bold mb-1" id="heroLastUpdate">--</div>
+              <div class="text-sm opacity-90">Last Update</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Market Overview Section (NEW - Before "Why Choose") -->
+    <section id="market-overview" class="py-20 bg-gray-50">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-5xl font-extrabold text-gray-900 mb-4">
+            Live Market Overview
+          </h2>
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+            Track the pulse of Moroccan financial markets in real-time
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          <!-- Market Summary Card -->
+          <div class="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-blue-600">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+              <i data-feather="activity" class="mr-3 text-blue-600"></i>
+              Market Summary
+            </h3>
+            <div class="space-y-4">
+              <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                <span class="text-gray-600">Total Market Cap</span>
+                <span class="text-xl font-bold text-gray-900" id="totalMarketCap">Loading...</span>
+              </div>
+              <div class="flex justify-between items-center p-4 bg-green-50 rounded-lg">
+                <span class="text-gray-600">Advancing Stocks</span>
+                <span class="text-xl font-bold text-green-600" id="advancingStocks">--</span>
+              </div>
+              <div class="flex justify-between items-center p-4 bg-red-50 rounded-lg">
+                <span class="text-gray-600">Declining Stocks</span>
+                <span class="text-xl font-bold text-red-600" id="decliningStocks">--</span>
+              </div>
+              <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                <span class="text-gray-600">Unchanged</span>
+                <span class="text-xl font-bold text-gray-600" id="unchangedStocks">--</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Movers Card -->
+          <div class="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-green-600">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+              <i data-feather="trending-up" class="mr-3 text-green-600"></i>
+              Top 5 Movers Today
+            </h3>
+            <div id="topMoversContainer" class="space-y-3">
+              <div class="text-center py-8">
+                <div class="loading-spinner mx-auto mb-3"></div>
+                <p class="text-gray-500">Loading top movers...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sector Performance -->
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+          <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <i data-feather="pie-chart" class="mr-3 text-purple-600"></i>
+            Sector Performance
+          </h3>
+          <div id="sectorPerformance" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <!-- Sectors will be loaded dynamically -->
+            <div class="text-center py-8 col-span-full">
+              <div class="loading-spinner mx-auto mb-3"></div>
+              <p class="text-gray-500">Loading sector data...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose MaFinance Pro? (Enhanced) -->
+    <section class="py-20 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-5xl font-extrabold text-gray-900 mb-4">
+            Why Choose MaFinance Pro?
+          </h2>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            The most comprehensive platform for Moroccan stock market analysis
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="group text-center p-8 rounded-2xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-blue-50 to-white border border-blue-100">
+            <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+              <i data-feather="trending-up" class="text-white w-10 h-10"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">
+              Real-time Data
+            </h3>
+            <p class="text-gray-600 leading-relaxed">
+              Live market data from Casablanca Stock Exchange with automatic 15-minute updates
+            </p>
+          </div>
+
+          <div class="group text-center p-8 rounded-2xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-green-50 to-white border border-green-100">
+            <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+              <i data-feather="bar-chart-2" class="text-white w-10 h-10"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">
+              Advanced Analytics
+            </h3>
+            <p class="text-gray-600 leading-relaxed">
+              Comprehensive stock analysis with detailed metrics and performance indicators
+            </p>
+          </div>
+
+          <div class="group text-center p-8 rounded-2xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-purple-50 to-white border border-purple-100">
+            <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+              <i data-feather="shield" class="text-white w-10 h-10"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">
+              Secure Platform
+            </h3>
+            <p class="text-gray-600 leading-relaxed">
+              Enterprise-grade security with encrypted data and secure authentication
+            </p>
+          </div>
+
+          <div class="group text-center p-8 rounded-2xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-orange-50 to-white border border-orange-100">
+            <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+              <i data-feather="zap" class="text-white w-10 h-10"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">
+              Lightning Fast
+            </h3>
+            <p class="text-gray-600 leading-relaxed">
+              Optimized performance for instant data loading and smooth user experience
+            </p>
+          </div>
+
+          <div class="group text-center p-8 rounded-2xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-pink-50 to-white border border-pink-100">
+            <div class="w-20 h-20 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+              <i data-feather="filter" class="text-white w-10 h-10"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">
+              Smart Filtering
+            </h3>
+            <p class="text-gray-600 leading-relaxed">
+              Advanced search and filtering by sector, price, performance, and more
+            </p>
+          </div>
+
+          <div class="group text-center p-8 rounded-2xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-indigo-50 to-white border border-indigo-100">
+            <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+              <i data-feather="smartphone" class="text-white w-10 h-10"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">
+              Mobile Friendly
+            </h3>
+            <p class="text-gray-600 leading-relaxed">
+              Fully responsive design that works perfectly on all devices and screen sizes
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section (NEW) -->
+    <section class="py-20 bg-gradient-to-br from-gray-50 to-gray-100">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-5xl font-extrabold text-gray-900 mb-4">
+            How It Works
+          </h2>
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+            Get started in three simple steps
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div class="relative">
+            <div class="bg-white rounded-2xl shadow-xl p-8 h-full border-t-4 border-blue-600">
+              <div class="absolute -top-6 left-8 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                1
+              </div>
+              <div class="mt-4">
+                <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-6">
+                  <i data-feather="user-plus" class="text-blue-600 w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">Create Account</h3>
+                <p class="text-gray-600 text-center">
+                  Sign up for free and get instant access to all market data and features
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative">
+            <div class="bg-white rounded-2xl shadow-xl p-8 h-full border-t-4 border-green-600">
+              <div class="absolute -top-6 left-8 w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                2
+              </div>
+              <div class="mt-4">
+                <div class="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-6">
+                  <i data-feather="search" class="text-green-600 w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">Explore Stocks</h3>
+                <p class="text-gray-600 text-center">
+                  Browse and search through 78+ Moroccan stocks with real-time data
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative">
+            <div class="bg-white rounded-2xl shadow-xl p-8 h-full border-t-4 border-purple-600">
+              <div class="absolute -top-6 left-8 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                3
+              </div>
+              <div class="mt-4">
+                <div class="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-6">
+                  <i data-feather="bar-chart" class="text-purple-600 w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">Make Decisions</h3>
+                <p class="text-gray-600 text-center">
+                  Analyze detailed metrics and make informed investment decisions
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section (Enhanced) -->
+    <section class="py-20 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div class="group">
+            <div class="text-5xl font-extrabold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform">78+</div>
+            <div class="text-gray-600 font-medium">Moroccan Stocks</div>
+          </div>
+          <div class="group">
+            <div class="text-5xl font-extrabold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform">24/7</div>
+            <div class="text-gray-600 font-medium">Market Monitoring</div>
+          </div>
+          <div class="group">
+            <div class="text-5xl font-extrabold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform">15min</div>
+            <div class="text-gray-600 font-medium">Auto Updates</div>
+          </div>
+          <div class="group">
+            <div class="text-5xl font-extrabold bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform">100%</div>
+            <div class="text-gray-600 font-medium">Free Access</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Stock / Market Head Section -->
+    <section class="py-20 bg-gradient-to-br from-blue-50 to-purple-50">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-12">
+          <h2 class="text-5xl font-extrabold text-gray-900 mb-4" id="marketHeadTitle">
+            Today's Market Leader
+          </h2>
+          <p class="text-xl text-gray-600">
+            Top performing stock of the day
+          </p>
+        </div>
+
+        <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-10 border-t-4 border-gradient-to-r from-blue-600 to-purple-600">
+          <div id="featuredStockContent" class="hidden">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <!-- Stock Info -->
+              <div class="flex-1">
+                <h3 class="text-4xl font-extrabold text-gray-900 mb-2" id="featuredStockName">
+                  --
+                </h3>
+                <div class="flex items-center flex-wrap gap-3 mb-4">
+                  <span class="text-xl text-gray-600 font-medium" id="featuredStockSymbol">--</span>
+                  <span
+                    class="px-4 py-2 rounded-full text-base font-bold"
+                    id="featuredStockChange"
+                    >0.00%</span
+                  >
+                </div>
+                <p class="text-gray-600" id="featuredStockSector">--</p>
+              </div>
+
+              <!-- Price & Button -->
+              <div class="text-left lg:text-right">
+                <p class="text-sm text-gray-500 mb-1">Current Price</p>
+                <p class="text-5xl font-extrabold text-gray-900 mb-6" id="featuredStockPrice">
+                  -- MAD
+                </p>
+                <a
+                  href="#"
+                  id="featuredDetailsLink"
+                  class="inline-flex items-center justify-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-bold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                >
+                  <i data-feather="external-link" class="h-5 w-5 mr-2"></i>
+                  View Full Details
+                </a>
+              </div>
+            </div>
+          </div>
+          <div id="featuredLoading" class="text-center py-8">
+              <div class="loading-spinner mb-4 mx-auto" style="border: 4px solid rgba(0, 0, 0, 0.1); width: 48px; height: 48px; border-radius: 50%; border-left-color: #3b82f6; animation: spin 1s linear infinite;"></div>
+              <p class="text-gray-600 text-lg">Loading market leader...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Section (NEW) -->
+    <section class="py-20 bg-gradient-to-r from-blue-600 via-purple-700 to-indigo-800 text-white relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+      </div>
+
       <div class="container mx-auto px-6 relative z-10">
         <div class="max-w-4xl mx-auto text-center">
-          <h1 class="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">
-            MaFinance Pro
-          </h1>
-          <p class="text-xl md:text-2xl mb-8 opacity-90">
-            Professional Moroccan Stocks Analysis & Real-time Market Data
+          <h2 class="text-4xl md:text-5xl font-extrabold mb-6">
+            Ready to Start Your Investment Journey?
+          </h2>
+          <p class="text-xl mb-10 opacity-90">
+            Join thousands of investors who trust MaFinance Pro for Moroccan stock market analysis
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/stocks.html"
-              class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              class="bg-white text-blue-600 px-10 py-5 rounded-xl font-bold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-2xl"
             >
-              Explore Stocks
+              Start Exploring Now
             </a>
             <a
               href="/register.html"
-              class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300"
+              class="border-2 border-white text-white px-10 py-5 rounded-xl font-bold hover:bg-white/10 backdrop-blur-sm transition-all duration-300"
             >
-              Get Started
+              Create Free Account
             </a>
           </div>
         </div>
       </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="py-20 bg-white">
-      <div class="container mx-auto px-6">
-        <h2 class="text-4xl font-bold text-center text-gray-800 mb-16">
-          Why Choose MaFinance Pro?
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div
-            class="text-center p-6 rounded-xl hover:shadow-lg transition-all duration-300"
-          >
-            <div
-              class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4"
-            >
-              <i data-feather="trending-up" class="text-blue-600"></i>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">
-              Real-time Data
-            </h3>
-            <p class="text-gray-600">
-              Live market data from Moroccan stock exchange with yfinance
-              integration
-            </p>
-          </div>
-          <div
-            class="text-center p-6 rounded-xl hover:shadow-lg transition-all duration-300"
-          >
-            <div
-              class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
-            >
-              <i data-feather="bar-chart-2" class="text-green-600"></i>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">
-              Advanced Analytics
-            </h3>
-            <p class="text-gray-600">
-              Detailed stock analysis with historical data and performance
-              metrics
-            </p>
-          </div>
-          <div
-            class="text-center p-6 rounded-xl hover:shadow-lg transition-all duration-300"
-          >
-            <div
-              class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4"
-            >
-              <i data-feather="shield" class="text-purple-600"></i>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">
-              Secure Platform
-            </h3>
-            <p class="text-gray-600">
-              Enterprise-grade security with encrypted data and secure
-              authentication
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="py-16 bg-gray-100">
-      <div class="container mx-auto px-6">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div>
-            <div class="text-3xl font-bold text-blue-600 mb-2">50+</div>
-            <div class="text-gray-600">Moroccan Stocks</div>
-          </div>
-          <div>
-            <div class="text-3xl font-bold text-green-600 mb-2">24/7</div>
-            <div class="text-gray-600">Market Monitoring</div>
-          </div>
-          <div>
-            <div class="text-3xl font-bold text-purple-600 mb-2">99.9%</div>
-            <div class="text-gray-600">Uptime</div>
-          </div>
-          <div>
-            <div class="text-3xl font-bold text-orange-600 mb-2">10K+</div>
-            <div class="text-gray-600">Active Users</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- NOUVEAU: Featured Stock / Market Head Section --> 
-    <section class="py-20 bg-white"> 
-      <div class="container mx-auto px-6"> 
-        <h2 class="text-4xl font-bold text-center text-gray-800 mb-12" id="marketHeadTitle"> 
-          Market Head 
-        </h2> 
-    
-        <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-2xl p-8 border-t-4 border-blue-600"> 
-          <div id="featuredStockContent" class="hidden"> 
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between"> 
-              <!-- Stock Info --> 
-              <div> 
-                <h3 class="text-3xl font-bold text-gray-800 mb-1" id="featuredStockName"> 
-                  -- 
-                </h3> 
-                <div class="flex items-center"> 
-                  <span class="text-lg text-gray-600 mr-4" id="featuredStockSymbol">--</span> 
-                  <span 
-                    class="px-3 py-1 rounded-full text-sm font-semibold" 
-                    id="featuredStockChange" 
-                    >0.00%</span 
-                  > 
-                </div> 
-              </div> 
-    
-              <!-- Price & Button --> 
-              <div class="mt-4 md:mt-0 text-left md:text-right"> 
-                <p class="text-sm text-gray-500">Current Price</p> 
-                <p class="text-3xl font-bold text-gray-800 mb-4" id="featuredStockPrice"> 
-                  -- MAD 
-                </p> 
-                <!-- Button to view details of the featured stock --> 
-                <a 
-                  href="#" 
-                  id="featuredDetailsLink" 
-                  class="inline-flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 transform hover:scale-105" 
-                > 
-                  <i data-feather="external-link" class="h-5 w-5 mr-2"></i> 
-                  View Details 
-                </a> 
-              </div> 
-            </div> 
-          </div> 
-          <div id="featuredLoading" class="text-center py-4"> 
-              <div class="loading-spinner mb-4 mx-auto" style="border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #3b82f6; animation: spin 1s linear infinite;"></div> 
-              <p class="text-gray-600">Loading Market Head...</p> 
-          </div> 
-        </div> 
-      </div> 
     </section>
 
     <custom-footer></custom-footer>
@@ -186,40 +434,26 @@
     <script src="script.js"></script>
     <script>
       feather.replace();
-      // Vanta.js animation
-      VANTA.GLOBE({
-        el: ".relative",
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.0,
-        minWidth: 200.0,
-        scale: 1.0,
-        scaleMobile: 1.0,
-        color: 0x3b82f6,
-        backgroundColor: 0x4f46e5,
-        size: 1.0,
-      });
-      
+
       // Utility functions for formatting
       function formatCurrency(price) {
         const numPrice = parseFloat(price);
         if (isNaN(numPrice) || numPrice === 0) return 'N/A';
-        
-        return new Intl.NumberFormat('en-MA', { 
-            style: 'currency', 
+
+        return new Intl.NumberFormat('en-MA', {
+            style: 'currency',
             currency: 'MAD',
             minimumFractionDigits: 2
         }).format(numPrice);
       }
-      
+
       function formatPercentage(change) {
         const numChange = parseFloat(change);
         if (isNaN(numChange)) return '0.00%';
         const sign = numChange > 0 ? '+' : '';
         return `${sign}${numChange.toFixed(2)}%`;
       }
-      
+
       function getPriceChangeColor(change) {
         const numChange = parseFloat(change);
         if (isNaN(numChange)) return 'text-gray-600';
@@ -227,54 +461,188 @@
         if (numChange < 0) return 'bg-red-100 text-red-800';
         return 'bg-gray-100 text-gray-800';
       }
-      
-      // Load Market Head data
-      async function loadMarketHead() {
+
+      function formatMarketCap(cap) {
+        if (!cap || cap === 'N/A') return 'N/A';
+        return cap;
+      }
+
+      function formatNumber(num) {
+        return new Intl.NumberFormat('en-US').format(num);
+      }
+
+      // Load Market Overview Data
+      async function loadMarketOverview() {
         try {
           const response = await fetch('/api/stocks');
-          
+
           if (!response.ok) {
             throw new Error(`API returned status ${response.status}`);
           }
-          
+
           const data = await response.json();
-          
+
           if (!data.stocks || data.stocks.length === 0) {
             throw new Error('No stocks data available');
           }
-          
-          // Get the first stock as the Market Head
-          const featuredStock = data.stocks[0];
-          
+
+          const stocks = data.stocks;
+
+          // Calculate market statistics
+          let advancingCount = 0;
+          let decliningCount = 0;
+          let unchangedCount = 0;
+          let totalMarketCap = 0;
+
+          stocks.forEach(stock => {
+            const change = parseFloat(stock.change);
+            if (change > 0) advancingCount++;
+            else if (change < 0) decliningCount++;
+            else unchangedCount++;
+          });
+
+          // Update hero stats
+          document.getElementById('heroTotalStocks').textContent = stocks.length;
+          document.getElementById('heroGainers').textContent = advancingCount;
+          document.getElementById('heroLosers').textContent = decliningCount;
+          document.getElementById('heroLastUpdate').textContent = data.timestamp ? new Date(data.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : 'Just now';
+
+          // Update market summary
+          document.getElementById('totalMarketCap').textContent = `${stocks.length} stocks`;
+          document.getElementById('advancingStocks').textContent = advancingCount;
+          document.getElementById('decliningStocks').textContent = decliningCount;
+          document.getElementById('unchangedStocks').textContent = unchangedCount;
+
+          // Get top 5 movers
+          const sortedByChange = [...stocks].sort((a, b) => Math.abs(parseFloat(b.change)) - Math.abs(parseFloat(a.change)));
+          const topMovers = sortedByChange.slice(0, 5);
+
+          // Display top movers
+          const topMoversContainer = document.getElementById('topMoversContainer');
+          topMoversContainer.innerHTML = topMovers.map((stock, index) => `
+            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div class="flex items-center gap-3">
+                <span class="font-bold text-gray-400">${index + 1}</span>
+                <div>
+                  <div class="font-semibold text-gray-800">${stock.name}</div>
+                  <div class="text-sm text-gray-500">${stock.symbol}</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="font-bold text-gray-900">${formatCurrency(stock.price)}</div>
+                <div class="text-sm font-semibold ${parseFloat(stock.change) >= 0 ? 'text-green-600' : 'text-red-600'}">
+                  ${formatPercentage(stock.change)}
+                </div>
+              </div>
+            </div>
+          `).join('');
+
+          // Calculate sector performance
+          const sectorData = {};
+          stocks.forEach(stock => {
+            if (!sectorData[stock.sector]) {
+              sectorData[stock.sector] = { count: 0, totalChange: 0 };
+            }
+            sectorData[stock.sector].count++;
+            sectorData[stock.sector].totalChange += parseFloat(stock.change) || 0;
+          });
+
+          // Display sector performance
+          const sectorPerformance = document.getElementById('sectorPerformance');
+          sectorPerformance.innerHTML = Object.entries(sectorData)
+            .sort((a, b) => (b[1].totalChange / b[1].count) - (a[1].totalChange / a[1].count))
+            .slice(0, 10)
+            .map(([sector, data]) => {
+              const avgChange = data.totalChange / data.count;
+              return `
+                <div class="p-4 rounded-lg ${avgChange >= 0 ? 'bg-green-50' : 'bg-red-50'} border ${avgChange >= 0 ? 'border-green-200' : 'border-red-200'}">
+                  <div class="text-sm font-medium text-gray-600 mb-2">${sector}</div>
+                  <div class="text-2xl font-bold ${avgChange >= 0 ? 'text-green-600' : 'text-red-600'}">
+                    ${formatPercentage(avgChange)}
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1">${data.count} stocks</div>
+                </div>
+              `;
+            }).join('');
+
+        } catch (error) {
+          console.error('Error loading market overview:', error);
+        }
+      }
+
+      // Load Market Head data (featured stock)
+      async function loadMarketHead() {
+        try {
+          const response = await fetch('/api/stocks');
+
+          if (!response.ok) {
+            throw new Error(`API returned status ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (!data.stocks || data.stocks.length === 0) {
+            throw new Error('No stocks data available');
+          }
+
+          // Get the stock with highest absolute change
+          const featuredStock = data.stocks.reduce((max, stock) =>
+            Math.abs(parseFloat(stock.change)) > Math.abs(parseFloat(max.change)) ? stock : max
+          );
+
           // Update the UI elements
           document.getElementById('featuredStockName').textContent = featuredStock.name;
           document.getElementById('featuredStockSymbol').textContent = featuredStock.symbol;
+          document.getElementById('featuredStockSector').textContent = `Sector: ${featuredStock.sector}`;
           document.getElementById('featuredStockPrice').textContent = formatCurrency(featuredStock.price);
-          
+
           const changeElement = document.getElementById('featuredStockChange');
           changeElement.textContent = formatPercentage(featuredStock.change);
-          changeElement.className = `px-3 py-1 rounded-full text-sm font-semibold ${getPriceChangeColor(featuredStock.change)}`;
-          
+          changeElement.className = `px-4 py-2 rounded-full text-base font-bold ${getPriceChangeColor(featuredStock.change)}`;
+
           // Update the details link
           document.getElementById('featuredDetailsLink').href = `stock-details.html?symbol=${featuredStock.symbol}`;
-          
+
           // Hide loading, show content
           document.getElementById('featuredLoading').classList.add('hidden');
           document.getElementById('featuredStockContent').classList.remove('hidden');
-          
+
         } catch (error) {
           console.error('Error loading Market Head:', error);
-          document.getElementById('marketHeadTitle').textContent = 'Market Head (Unavailable)';
+          document.getElementById('marketHeadTitle').textContent = 'Market Leader (Unavailable)';
           document.getElementById('featuredLoading').innerHTML = `
             <p class="text-red-600">Unable to load market data. Please try again later.</p>
           `;
         }
       }
-      
+
       // Initialize when DOM is loaded
       document.addEventListener('DOMContentLoaded', function() {
+        loadMarketOverview();
         loadMarketHead();
+
+        // Re-initialize feather icons after dynamic content is loaded
+        setTimeout(() => feather.replace(), 100);
       });
+
+      // Vanta.js animation for hero section
+      try {
+        VANTA.GLOBE({
+          el: "#vanta-hero",
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.0,
+          minWidth: 200.0,
+          scale: 1.0,
+          scaleMobile: 1.0,
+          color: 0x3b82f6,
+          backgroundColor: 0x4f46e5,
+          size: 0.8,
+        });
+      } catch(e) {
+        console.log('Vanta.js not loaded');
+      }
     </script>
   </body>
 </html>

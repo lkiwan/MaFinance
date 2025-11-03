@@ -23,7 +23,7 @@ def fetch_bvc_prices():
             EC.presence_of_element_located((By.CSS_SELECTOR, "table tbody tr"))
         )
     except Exception:
-        print("⚠️ Table not found — maybe page structure changed or needs more wait.")
+        print("[WARNING] Table not found - maybe page structure changed or needs more wait.")
     
     soup = BeautifulSoup(driver.page_source, "html.parser")
     driver.quit()
@@ -87,10 +87,10 @@ def fetch_bvc_prices():
     df["Timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     if df.empty:
-        print("❌ No data fetched — check if table selector changed or site blocks scraping.")
+        print("[ERROR] No data fetched - check if table selector changed or site blocks scraping.")
     else:
-        print(f"✅ {len(df)} stocks fetched at {df['Timestamp'].iloc[0]}")
-        print(f"✅ Columns: {', '.join(df.columns)}")
+        print(f"[SUCCESS] {len(df)} stocks fetched at {df['Timestamp'].iloc[0]}")
+        print(f"[INFO] Columns: {', '.join(df.columns)}")
 
     return df
 
@@ -98,4 +98,4 @@ def fetch_bvc_prices():
 if __name__ == "__main__":
     df = fetch_bvc_prices()
     df.to_csv("bvc_prices_latest_new.csv", index=False)
-    print("✅ Saved to bvc_prices_latest_new.csv")
+    print("[SUCCESS] Saved to bvc_prices_latest_new.csv")

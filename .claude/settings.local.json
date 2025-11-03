@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nInitial commit: MaFinance Pro - Moroccan Stock Market Dashboard\n\nFeatures:\n- Real-time stock data from Casablanca Stock Exchange\n- Interactive dashboard with search and filtering\n- Detailed stock information and charts\n- Web scraper for BVC data\n- RESTful API with Flask backend\n- Responsive UI with Tailwind CSS\n- Security improvements (input validation, headers)\n- Comprehensive documentation\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git config:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(pip3 install:*)",
+      "Bash(python3:*)",
+      "Bash(sudo apt update:*)",
+      "Bash(sudo apt install:*)",
+      "Bash(source venv/bin/activate)",
+      "Bash(. venv/bin/activate)",
+      "Bash(source venv/Scripts/activate:*)",
+      "Bash(venv/Scripts/pip.exe install:*)",
+      "Bash(venv/Scripts/python.exe:*)",
+      "Bash(curl:*)",
+      "Bash(cat:*)",
+      "Bash(pkill:*)",
+      "Bash(taskkill:*)",
+      "Bash(timeout 5 tail:*)",
+      "Bash(pip3 list:*)",
+      "Bash(chmod:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
